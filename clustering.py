@@ -51,8 +51,8 @@ def data_preparation(train_path, test_path, dims):
 
     #Reading training labels and resizing images
     y_train = []
-        with open(train_path+ 'train_labels.json') as json_file:
-            data = json.load(json_file)
+    with open(train_path+ 'train_labels.json') as json_file:
+        data = json.load(json_file)
     for element in data:
         y_train.append(int(data[element]))
     
@@ -212,9 +212,9 @@ def plot_confusion_matrix(y_true, y_pred, classes, normalize=False, title=None, 
 
     # Only use the labels that appear in the data
     classes = classes[unique_labels(y_true, y_pred)]
-        if normalize:
-            cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-            print("Normalized confusion matrix")
+    if normalize:
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        print("Normalized confusion matrix")
     else:
         print('Confusion matrix, without normalization')
         
