@@ -49,12 +49,12 @@ def data_preparation(train_path, test_path, dims):
     #pdb.set_trace()
     #x_train = x_train.reshape((x_train.shape[0], dims[0], dims[1], 1))
 
-#Reading training labels and resizing images
-y_train = []
-    with open(train_path+ 'train_labels.json') as json_file:
-        data = json.load(json_file)
-for element in data:
-    y_train.append(int(data[element]))
+    #Reading training labels and resizing images
+    y_train = []
+        with open(train_path+ 'train_labels.json') as json_file:
+            data = json.load(json_file)
+    for element in data:
+        y_train.append(int(data[element]))
     
     #Reading the test data and resizing images
     x_test = []
@@ -65,12 +65,12 @@ for element in data:
     x_test = np.array(x_test)
     #x_test = x_test.reshape((x_test.shape[0], dims[0], dims[1], 1))
 
-#Reading test labels
-y_test = []
-with open(test_path+ 'val_labels.json') as json_file:
-    data = json.load(json_file)
-    for element in data:
-        y_test.append(int(data[element]))
+    #Reading test labels
+    y_test = []
+    with open(test_path+ 'val_labels.json') as json_file:
+        data = json.load(json_file)
+        for element in data:
+            y_test.append(int(data[element]))
     
     #Convert to float
     x_train = x_train.astype('float32')
@@ -210,34 +210,34 @@ def plot_confusion_matrix(y_true, y_pred, classes, normalize=False, title=None, 
     # Compute confusion matrix
     cm = confusion_matrix(y_true, y_pred)
 
-# Only use the labels that appear in the data
-classes = classes[unique_labels(y_true, y_pred)]
-    if normalize:
-        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-        print("Normalized confusion matrix")
-else:
-    print('Confusion matrix, without normalization')
-    
-    print(cm)
-    
-    fig, ax = plt.subplots()
-    im = ax.imshow(cm, interpolation='nearest', cmap=cmap)
-    ax.figure.colorbar(im, ax=ax)
-    # We want to show all ticks...
-    ax.set(xticks=np.arange(cm.shape[1]), yticks=np.arange(cm.shape[0]), xticklabels=classes, yticklabels=classes, title=title, ylabel='True label', xlabel='Predicted label')
-    
-    # Rotate the tick labels and set their alignment.
-    plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
-    
-    # Loop over data dimensions and create text annotations.
-    fmt = '.0f' if normalize else 'd'
-    thresh = cm.max() / 2.
-    for i in range(cm.shape[0]):
-        for j in range(cm.shape[1]):
-            if cm[i,j] > 0.1:
-                ax.text(j, i, format(cm[i, j]*100, fmt), ha="center", va="center", color="white" if cm[i, j] > thresh else "black")
-    fig.tight_layout()
-    return ax
+    # Only use the labels that appear in the data
+    classes = classes[unique_labels(y_true, y_pred)]
+        if normalize:
+            cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+            print("Normalized confusion matrix")
+    else:
+        print('Confusion matrix, without normalization')
+        
+        print(cm)
+        
+        fig, ax = plt.subplots()
+        im = ax.imshow(cm, interpolation='nearest', cmap=cmap)
+        ax.figure.colorbar(im, ax=ax)
+        # We want to show all ticks...
+        ax.set(xticks=np.arange(cm.shape[1]), yticks=np.arange(cm.shape[0]), xticklabels=classes, yticklabels=classes, title=title, ylabel='True label', xlabel='Predicted label')
+        
+        # Rotate the tick labels and set their alignment.
+        plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+        
+        # Loop over data dimensions and create text annotations.
+        fmt = '.0f' if normalize else 'd'
+        thresh = cm.max() / 2.
+        for i in range(cm.shape[0]):
+            for j in range(cm.shape[1]):
+                if cm[i,j] > 0.1:
+                    ax.text(j, i, format(cm[i, j]*100, fmt), ha="center", va="center", color="white" if cm[i, j] > thresh else "black")
+        fig.tight_layout()
+        return ax
 
 
 
