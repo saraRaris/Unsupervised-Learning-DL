@@ -1,42 +1,30 @@
 import glob
 import cv2
 import numpy as np
-import pdb
 import os
 import json
 import pickle
 import sys, argparse
+import cv2
 
 from keras import Model
-from keras.models import Sequential
-from keras.applications import ResNet50, VGG16, InceptionResNetV2
+from keras.applications import ResNet50, InceptionResNetV2
 from keras.applications.resnet50 import preprocess_input
 from keras.applications.xception import Xception
-from keras.applications.inception_v3 import InceptionV3
-from keras.layers import Conv2D, MaxPool2D, Dropout, Flatten, Dense, BatchNormalization, GlobalAveragePooling2D, Activation
+from keras.layers import Dense
 from keras.layers import Input
 from keras.utils import np_utils
 from keras.models import model_from_json
-from keras. callbacks import ModelCheckpoint
 
 from sklearn.cluster import KMeans
 from sklearn import metrics
 from sklearn import manifold
 from sklearn.cluster import AgglomerativeClustering
-from sklearn.metrics import confusion_matrix
 from sklearn.utils.multiclass import unique_labels
 from sklearn.utils import class_weight
 
-
 from matplotlib import pyplot as plt
-from scipy.optimize import linear_sum_assignment
-from copy import deepcopy
 
-from keras.models import Sequential
-from keras.layers.core import Flatten, Dense, Dropout
-from keras.layers.convolutional import Convolution2D, MaxPooling2D, ZeroPadding2D
-from keras.optimizers import SGD
-import cv2, numpy as np
 
 
 def parse_args():
