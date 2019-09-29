@@ -9,7 +9,7 @@ In this repository the following files can be found:
 * Several .json files under the folder models with the architecture of the models used.
 * Several .p  with the training history  of the models trained for the task.
 
-The weights of the models trained for this task can be found [here] (https://drive.google.com/drive/u/0/folders/1Baw-NlDgTuTVsh0w41hj3_GYYo_S4fwx). To run the code place them inside the models models.
+The weights of the models trained for this task can be found [here](https://drive.google.com/open?id=1Baw-NlDgTuTVsh0w41hj3_GYYo_S4fwx). To run the code place them inside the models models.
 The dataset can be dowlnoaded [here](https://drive.google.com/file/d/1lm0pGemIVukCAwxcBFl1Bl5keNAi_wbR/view).
 
 To run the first part of the code select one of the three possible models available, the clustering algorithm and the loss and run the following instruction on the terminal:
