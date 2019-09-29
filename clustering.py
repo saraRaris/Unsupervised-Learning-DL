@@ -345,7 +345,7 @@ def get_centers(x_train, y_train, model):
 if __name__ == "__main__":
     train_path = 'dataset/train/'
     test_path = 'dataset/test/'
-    batch = 16
+    batch = 56
     num_clusters = 3
     args = parse_args()
     
