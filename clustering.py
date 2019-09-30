@@ -101,8 +101,11 @@ def train_model(x_train, y_train, batch, x_test, y_test, model_name, loss):
         print('Model name unknown, please choose ResNet50, Xception or InceptionResNetV2.')
         sys.exit()
 
-    #Option for clustering-loss
-    if loss == 'clustering':
+    if loss == 'clustering' and model_name != 'ResNet50':
+        print('Option not available. Please use ResNet50 when training with clustering loss')
+        sys.exit()
+    #Option for clustering-loss (Labels are the cluster centers)
+    elif loss == 'clustering':
         c1_m, c2_m, c3_m = get_centers(x_train, y_train, model)
         y_train_reg = []
         for y in y_train:
@@ -126,6 +129,7 @@ def train_model(x_train, y_train, batch, x_test, y_test, model_name, loss):
         y_test = np.asarray(y_test_reg)
         #Train model
         history = model.fit(x_train,y_train, validation_data = (x_test, y_test), epochs=num_epochs, batch_size=batch, shuffle = True)
+    #Option for training with non-clustering loss
     else:
         x = Dense(3, activation='softmax')(model.output)
         model = Model(inputs = model.input, outputs=x)
@@ -189,7 +193,6 @@ def feature_extractor(x_test, y_test, model, loss):
         features = model.predict(img)
         #Add to data features
         data_features.append(features.flatten())
-        print(i)
     
     return data_features, labels
 
@@ -218,17 +221,19 @@ def clustering(features, labels, clusters, method):
 
 
 
-def visualize_data(Z, labels, num_clusters):
+def visualize_data(features, labels, num_clusters):
+    ''' This function applied PCA to the features to reduce dimensionality and plots them '''
     tsne = manifold.TSNE(n_components=2, init='pca', random_state=0)
-    Z_tsne = tsne.fit_transform(Z)
+    features_tsne = tsne.fit_transform(features)
     fig = plt.figure()
-    plt.scatter(Z_tsne[:, 0], Z_tsne[:, 1], s=2, c=labels, cmap=plt.cm.get_cmap("jet", num_clusters))
+    plt.scatter(features_tsne[:, 0], features_tsne[:, 1], s=2, c=labels, cmap=plt.cm.get_cmap("jet", num_clusters))
     plt.colorbar(ticks=range(num_clusters))
     plt.show()
 
 
 
 def print_vectors_feats(feats, labels):
+    ''' This function plots the normalized features for each class '''
     zipped = zip(feats, labels)
     n_feats = len(feats[0])
     x = np.linspace(0,n_feats, num=n_feats)
@@ -266,7 +271,7 @@ def print_vectors_feats(feats, labels):
 
 
 def plot_history(model_name, loss):
-    
+    ''' This function plots the training history of the models '''
     if loss == 'clustering':
         model_name = model_name + '_clusteringloss'
     history = pickle.load(open('models/' + model_name +'.p',"rb"))
@@ -298,6 +303,7 @@ def plot_history(model_name, loss):
 
 
 def get_centers(x_train, y_train, model):
+    ''' This function computes the centers of the clusters and saves them in three separate files '''
     if os.path.exists('center_1.csv'):
         c1_m = np.genfromtxt('center_1.csv', dtype=None)
         c2_m = np.genfromtxt('center_2.csv', dtype=None)
