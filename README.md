@@ -27,7 +27,7 @@ The possible clustering algorithms  are:
 * Kmeans
 * AC
 
-The loss is None by default. Only one ResNet50 is available with clustering loss. To run this option enter the following instruction on the terminal:
+The loss is None by default. Only ResNet50 is available with clustering loss. Before running this, the weights for ResNet50 need to be downloaded and place inside folder models. To run this option enter the following instruction on the terminal:
 
     python train_model.py --model 'ResNet50' --clustering 'clustering_algorithm' --loss 'clustering'
 	
