@@ -85,7 +85,7 @@ def train_model(x_train, y_train, batch, x_test, y_test, model_name, loss):
     #Define model and other parameters
     if model_name == 'ResNet50':
         if loss == 'clustering':
-            model = load_model(model_name, 'None')
+            model = load_model(model_name, None)
             model = Model(inputs = model.input, outputs=model.layers[-2].output)
             num_epochs = 35
         else:
