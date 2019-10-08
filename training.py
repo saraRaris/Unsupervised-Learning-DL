@@ -80,16 +80,16 @@ def train_model(x_train, y_train, batch, x_test, y_test, model_name, loss):
         if loss == 'clustering':
             model = load_model(model_name, None)
             model = Model(inputs = model.input, outputs=model.layers[-2].output)
-            num_epochs = 2#35
+            num_epochs = 35
         else:
             model = ResNet50(include_top=False, weights='imagenet', input_shape = (166, 166, 3), pooling = 'avg')
-            num_epochs = 2#15
+            num_epochs = 15
     elif model_name == 'InceptionResNetV2':
         model = InceptionResNetV2(include_top=False, weights='imagenet', input_shape = (166, 166, 3), pooling = 'avg')
-        num_epochs = 2#25
+        num_epochs = 25
     elif model_name == 'Xception':
         model = Xception(include_top=False, weights='imagenet', input_shape = (166, 166, 3), pooling = 'avg')
-        num_epochs = 2#25
+        num_epochs = 25
     else:
         print('Model name unknown, please choose ResNet50, Xception or InceptionResNetV2.')
         sys.exit()
@@ -139,17 +139,35 @@ def train_model(x_train, y_train, batch, x_test, y_test, model_name, loss):
         history = model.fit(x_train,y_train, validation_data = (x_test, y_test), epochs=num_epochs, batch_size=batch, shuffle = True, class_weight = class_weight_dict)
     
     #Save history
-#with open('models/'+model_name+'.p', 'wb') as file_pi:
-    with open(model_name+'.p', 'wb') as file_pi:
+    with open('models/'+model_name+'.p', 'wb') as file_pi:
         pickle.dump(history.history, file_pi)
     
     #Save model
     model_json = model.to_json()
-    #with open('models/'+model_name+'.json', "w") as json_file:
-    with open(model_name+'.json', "w") as json_file:
+    with open('models/'+model_name+'.json', "w") as json_file:
         json_file.write(model_json)
-#model.save_weights('models/'+model_name+'.h5')
-    model.save_weights(model_name+'.h5')
+    model.save_weights('models/'+model_name+'.h5')
+
+
+
+def load_model(model_name, loss):
+    
+    if model_name != 'ResNet50' and model_name != 'Xception' and model_name != 'InceptionResNetV2':
+        print('Model name unknown, please choose ResNet50, Xception or InceptionResNetV2.')
+        sys.exit()
+    
+    #Load model structure
+    if loss == 'clustering':
+        model_name = model_name + '_clusteringloss'
+    json_file = open('models/'+model_name + '.json', 'r')
+    loaded_model_json = json_file.read()
+    json_file.close()
+    loaded_model = model_from_json(loaded_model_json)
+    
+    #Load weights into new model
+    loaded_model.load_weights('models/'+model_name + '.h5')
+
+    return loaded_model
 
 
 
@@ -165,7 +183,6 @@ def get_centers(x_train, y_train, model):
         c2 = []
         c3 = []
         for idx, x in enumerate(train):
-            print('Taking image: '+str(idx))
             img = preprocess_input(np.expand_dims(x[0], axis=0))
             pred = model.predict(img)
             if x[1] == 1:
