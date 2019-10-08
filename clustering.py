@@ -172,40 +172,6 @@ def print_vectors_feats(feats, labels):
 
 
 
-def get_centers(x_train, y_train, model):
-    ''' This function computes the centers of the clusters and saves them in three separate files '''
-    if os.path.exists('center_1.csv'):
-        c1_m = np.genfromtxt('center_1.csv', dtype=None)
-        c2_m = np.genfromtxt('center_2.csv', dtype=None)
-        c3_m = np.genfromtxt('center_3.csv', dtype=None)
-    else:
-        train = zip(x_train, y_train)
-        c1 = []
-        c2 = []
-        c3 = []
-        for idx, x in enumerate(train):
-            print('Taking image: '+str(idx))
-            img = preprocess_input(np.expand_dims(x[0], axis=0))
-            pred = model.predict(img)
-            if x[1] == 1:
-                c1.append(pred.flatten())
-            elif x[1] == 2:
-                c2.append(pred.flatten())
-            elif x[1] == 3:
-                c3.append(pred.flatten())
-            else:
-                print('Unknown class')
-        c1_m = np.mean(np.asarray(c1), axis=0)
-        np.savetxt('center_1.csv', c1_m, delimiter=',', fmt='%f')
-        c2_m = np.mean(np.asarray(c2), axis=0)
-        np.savetxt('center_2.csv', c2_m, delimiter=',', fmt='%f')
-        c3_m = np.mean(np.asarray(c3), axis=0)
-        np.savetxt('center_3.csv', c3_m, delimiter=',', fmt='%f')
-
-    return c1_m, c2_m, c3_m
-
-
-
 if __name__ == "__main__":
     test_path = 'dataset/test/'
     num_clusters = 3

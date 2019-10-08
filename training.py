@@ -80,16 +80,16 @@ def train_model(x_train, y_train, batch, x_test, y_test, model_name, loss):
         if loss == 'clustering':
             model = load_model(model_name, None)
             model = Model(inputs = model.input, outputs=model.layers[-2].output)
-            num_epochs = 35
+            num_epochs = 2#35
         else:
             model = ResNet50(include_top=False, weights='imagenet', input_shape = (166, 166, 3), pooling = 'avg')
-            num_epochs = 15
+            num_epochs = 2#15
     elif model_name == 'InceptionResNetV2':
         model = InceptionResNetV2(include_top=False, weights='imagenet', input_shape = (166, 166, 3), pooling = 'avg')
-        num_epochs = 25
+        num_epochs = 2#25
     elif model_name == 'Xception':
         model = Xception(include_top=False, weights='imagenet', input_shape = (166, 166, 3), pooling = 'avg')
-        num_epochs = 25
+        num_epochs = 2#25
     else:
         print('Model name unknown, please choose ResNet50, Xception or InceptionResNetV2.')
         sys.exit()
@@ -139,14 +139,51 @@ def train_model(x_train, y_train, batch, x_test, y_test, model_name, loss):
         history = model.fit(x_train,y_train, validation_data = (x_test, y_test), epochs=num_epochs, batch_size=batch, shuffle = True, class_weight = class_weight_dict)
     
     #Save history
-    with open('models/'+model_name+'.p', 'wb') as file_pi:
+#with open('models/'+model_name+'.p', 'wb') as file_pi:
+    with open(model_name+'.p', 'wb') as file_pi:
         pickle.dump(history.history, file_pi)
     
     #Save model
     model_json = model.to_json()
-    with open('models/'+model_name+'.json', "w") as json_file:
+    #with open('models/'+model_name+'.json', "w") as json_file:
+    with open(model_name+'.json', "w") as json_file:
         json_file.write(model_json)
-    model.save_weights('models/'+model_name+'.h5')
+#model.save_weights('models/'+model_name+'.h5')
+    model.save_weights(model_name+'.h5')
+
+
+
+def get_centers(x_train, y_train, model):
+    ''' This function computes the centers of the clusters and saves them in three separate files '''
+    if os.path.exists('center_1.csv'):
+        c1_m = np.genfromtxt('center_1.csv', dtype=None)
+        c2_m = np.genfromtxt('center_2.csv', dtype=None)
+        c3_m = np.genfromtxt('center_3.csv', dtype=None)
+    else:
+        train = zip(x_train, y_train)
+        c1 = []
+        c2 = []
+        c3 = []
+        for idx, x in enumerate(train):
+            print('Taking image: '+str(idx))
+            img = preprocess_input(np.expand_dims(x[0], axis=0))
+            pred = model.predict(img)
+            if x[1] == 1:
+                c1.append(pred.flatten())
+            elif x[1] == 2:
+                c2.append(pred.flatten())
+            elif x[1] == 3:
+                c3.append(pred.flatten())
+            else:
+                print('Unknown class')
+        c1_m = np.mean(np.asarray(c1), axis=0)
+        np.savetxt('center_1.csv', c1_m, delimiter=',', fmt='%f')
+        c2_m = np.mean(np.asarray(c2), axis=0)
+        np.savetxt('center_2.csv', c2_m, delimiter=',', fmt='%f')
+        c3_m = np.mean(np.asarray(c3), axis=0)
+        np.savetxt('center_3.csv', c3_m, delimiter=',', fmt='%f')
+    
+    return c1_m, c2_m, c3_m
 
 
 
